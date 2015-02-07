@@ -1,27 +1,103 @@
 package edu.utdallas.sai.model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 
 /**
  * Model Class for a Person
- * @author Sai
+ * @author Durga Sai Preetham Palagummi
  *
  */
 public class Person {
-private final StringProperty firstName;
-private final StringProperty lastName;
-private final StringProperty middleInitial;
-private final StringProperty addressLineOne;
-private final StringProperty addressLineTwo;
-private final StringProperty city;
-private final StringProperty state;
-private final IntegerProperty zipCode;
-private final IntegerProperty phoneNumber;
-private final StringProperty gender;
+private String firstName;
+private String lastName;
+private String middleInitial;
+private String addressLineOne;
+private String addressLineTwo;
+private String city;
+private String state;
+private String zipCode;
+private String phoneNumber;
+private String gender;
+
+public String getFirstName() {
+	return firstName;
+}
+
+public void setFirstName(String firstName) {
+	this.firstName = firstName;
+}
+
+public String getLastName() {
+	return lastName;
+}
+
+public void setLastName(String lastName) {
+	this.lastName = lastName;
+}
+
+public String getMiddleInitial() {
+	return middleInitial;
+}
+
+public void setMiddleInitial(String middleInitial) {
+	this.middleInitial = middleInitial;
+}
+
+public String getAddressLineOne() {
+	return addressLineOne;
+}
+
+public void setAddressLineOne(String addressLineOne) {
+	this.addressLineOne = addressLineOne;
+}
+
+public String getAddressLineTwo() {
+	return addressLineTwo;
+}
+
+public void setAddressLineTwo(String addressLineTwo) {
+	this.addressLineTwo = addressLineTwo;
+}
+
+public String getCity() {
+	return city;
+}
+
+public void setCity(String city) {
+	this.city = city;
+}
+
+public String getState() {
+	return state;
+}
+
+public void setState(String state) {
+	this.state = state;
+}
+
+public String getZipCode() {
+	return zipCode;
+}
+
+public void setZipCode(String zipCode) {
+	this.zipCode = zipCode;
+}
+
+public String getPhoneNumber() {
+	return phoneNumber;
+}
+
+public void setPhoneNumber(String phoneNumber) {
+	this.phoneNumber = phoneNumber;
+}
+
+public String getGender() {
+	return gender;
+}
+
+public void setGender(String gender) {
+	this.gender = gender;
+}
 
 /**
  * Default constructor.
@@ -37,111 +113,20 @@ public Person() {
  * @param lastName
  */
 public Person(String firstName, String lastName) {
-    this.firstName = new SimpleStringProperty(firstName);
-    this.lastName = new SimpleStringProperty(lastName);
+    this.firstName = firstName;
+    this.lastName = lastName;
 
     // Some initial dummy data, just for convenient testing.
-    this.middleInitial = new SimpleStringProperty("some street");
-    this.addressLineOne = new SimpleStringProperty("some address");
-    this.addressLineTwo = new SimpleStringProperty("some city");
-    this.city = new SimpleStringProperty("some city");
-    this.state = new SimpleStringProperty("some city");
-    this.zipCode = new SimpleIntegerProperty(1234);
-    this.phoneNumber = new SimpleIntegerProperty(1234);
-    this.gender = new SimpleStringProperty("some city");
+    this.middleInitial = "MiddleName";
+    this.addressLineOne = "Address One";
+    this.addressLineTwo = "Address Two";
+    this.city = "City";
+    this.state = "State";
+    this.zipCode = "ZipCode";
+    this.phoneNumber = "Phone";
+    this.gender = "Gender";
 }
 
 
-public String getFirstName() {
-    return firstName.get();
-}
-public void setFirstName(String firstName) {
-    this.firstName.set(firstName);
-}
-public String getLastName() {
-	return lastName.get();
-}
-public void setLastName(String lastName) {
-    this.lastName.set(lastName);
-}
-public String getMiddleInitial() {
-	return middleInitial.get();
-}
-public void setMiddleInitial(String middleInitial) {
-    this.middleInitial.set(middleInitial);
-}
-public String getAddressLineOne() {
-	return addressLineOne.get();
-}
-public void setAddressLineOne(String alo) {
-	this.addressLineOne.set(alo);
-}
-public String getAddressLineTwo() {
-	return addressLineTwo.get();
-}
-public void setAddressLineTwo(String alt) {
-	this.addressLineTwo.set(alt);
-}
-public String getCity() {
-	return city.get();
-}
-public void setCity(String city) {
-	this.city.set(city);
-}
-public String getState() {
-	return state.get();
-}
-public void setState(String state) {
-	this.state.set(state);
-}
-public int getZipCode() {
-	return zipCode.get();
-}
-public void setZipCode(int zip) {
-	this.zipCode.set(zip);
-}
-public int getPhoneNumber() {
-	return phoneNumber.get();
-}
-public void setPhoneNumber(int phone) {
-	this.phoneNumber.set(phone);
-}
-public String getGender() {
-	return gender.get();
-}
-public void setGender(String gender) {
-	this.gender.set(gender);
-}
 
-//String Properties
-public StringProperty lastNameProperty() {
-    return lastName;
-}
-public StringProperty firstNameProperty() {
-    return lastName;
-}
-public StringProperty getMiddleInitialProperty() {
-	return middleInitial;
-}
-public StringProperty getAddressLineOneProperty() {
-	return addressLineOne;
-}
-public StringProperty getAddressLineTwoProperty() {
-	return addressLineTwo;
-}
-public StringProperty getCityProperty() {
-	return city;
-}
-public StringProperty getStateProperty() {
-	return state;
-}
-public IntegerProperty getZipCodeProperty() {
-	return zipCode;
-}
-public IntegerProperty getPhoneNumberProperty() {
-	return phoneNumber;
-}
-public StringProperty getGenderProperty() {
-	return gender;
-}
 }
