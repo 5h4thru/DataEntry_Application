@@ -23,11 +23,11 @@
     -fx-opacity: 1;
 }
 
-#warning {
-	-fx-font-size: 14pt;
+.label-warn {
+	-fx-font-size: 11pt;
 	-fx-font-family: "Calibri";
 	-fx-text-fill: red;
-	-fx-opacity: 1;
+	-fx-opacity: 0.75;
 }
 
 .table-view {
@@ -85,7 +85,7 @@
 
 
 .button {
-    -fx-padding: 5 22 5 22;   
+    /* -fx-padding: 5 22 5 22; */   
     -fx-border-color: #ffffff;
     -fx-border-width: 2;
     -fx-background-radius: 0;

@@ -13,7 +13,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="background">
                <children>
-                  <TableView fx:id="personTable" layoutX="144.0" layoutY="38.0" prefHeight="766.0" prefWidth="456.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TableView fx:id="personTable" layoutX="144.0" layoutY="38.0" onMouseClicked="#onClickOfTable" prefHeight="766.0" prefWidth="456.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
                       <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
                       <TableColumn fx:id="phoneNumberColumn" prefWidth="75.0" text="Phone" />
@@ -31,9 +31,10 @@
                         <Font name="Calibri" size="22.0" />
                      </font>
                   </Label>
-                  <GridPane layoutX="51.0" layoutY="118.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="75.0">
+                  <GridPane layoutX="51.0" layoutY="118.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="75.0">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
@@ -99,26 +100,37 @@
                               <Font name="Calibri" size="18.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="firstNameText" promptText="Enter first name" GridPane.columnIndex="1" />
-                        <TextField fx:id="lastNameText" promptText="Enter last name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="middleInitialText" promptText="Enter initial" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <TextField fx:id="addressLineOneText" promptText="Enter address line 1" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <TextField fx:id="addressLineTwoText" promptText="Enter address line 2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <TextField fx:id="cityText" promptText="Enter City" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <TextField fx:id="stateText" promptText="Enter State" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                        <TextField fx:id="zipCodeText" promptText="Enter zip code" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                        <TextField fx:id="phoneText" promptText="Enter Phone number" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                        <TextField fx:id="genderText" promptText="M/F?" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <TextField fx:id="firstNameText" promptText="Enter first name" GridPane.columnIndex="2" />
+                        <TextField fx:id="lastNameText" promptText="Enter last name" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <TextField fx:id="middleInitialText" promptText="Enter initial" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <TextField fx:id="addressLineOneText" promptText="Address line 1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <TextField fx:id="addressLineTwoText" promptText="Address line 2" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <TextField fx:id="cityText" promptText="Enter City" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <TextField fx:id="stateText" promptText="Enter State" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                        <TextField fx:id="zipCodeText" promptText="Enter zip code" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                        <TextField fx:id="phoneText" promptText="Phone number" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                        <TextField fx:id="genderText" promptText="M/F?" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                        <Label fx:id="fnStatusLabel" styleClass="label-warn" GridPane.columnIndex="1" />
+                        <Label fx:id="lnStatusLabel" styleClass="label-warn" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="mStatusLabel" styleClass="label-warn" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="adoStatusLabel" styleClass="label-warn" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="adtStatusLabel" styleClass="label-warn" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label fx:id="ctStatusLabel" styleClass="label-warn" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label fx:id="stStatusLabel" styleClass="label-warn" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label fx:id="zpStatusLabel" styleClass="label-warn" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label fx:id="phStatusLabel" styleClass="label-warn" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <Label fx:id="gnStatusLabel" styleClass="label-warn" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                      </children>
                   </GridPane>
-                  <HBox layoutX="200.0" layoutY="714.0" spacing="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="30.0">
+
+                  <Label id="warning" fx:id="statusLabel" layoutX="14.0" layoutY="685.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+                  <HBox layoutX="291.0" layoutY="707.0" spacing="10.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0">
                      <children>
-                        <Button fx:id="addButton" layoutX="205.0" layoutY="668.0" mnemonicParsing="false" onAction="#handleAddPerson" prefHeight="30.0" prefWidth="90.0" text="Add" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="275.0" />
-                        <Button layoutX="290.0" layoutY="670.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="115.0" text="Update" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="150.0" />
-                        <Button fx:id="deleteButton" layoutX="436.0" layoutY="665.0" mnemonicParsing="false" onAction="#handleDeletePerson" prefHeight="33.0" prefWidth="101.0" text="Delete" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="425.0" AnchorPane.rightAnchor="30.0" />
+                        <Button fx:id="addButton" layoutX="291.0" layoutY="708.0" mnemonicParsing="false" onAction="#handleAddPerson" prefWidth="90.0" text="Add" />
+                        <Button fx:id="updateButton" layoutX="356.0" layoutY="708.0" mnemonicParsing="false" onAction="#handleUpdatePerson" prefWidth="90.0" text="Update" />
+                        <Button fx:id="deleteButton" layoutX="421.0" layoutY="707.0" mnemonicParsing="false" onAction="#handleDeletePerson" prefWidth="90.0" text="Delete" />
                      </children>
                   </HBox>
-                  <Label id="warning" fx:id="statusLabel" layoutX="14.0" layoutY="685.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
                </children>
             </AnchorPane>
         </items>

@@ -1,10 +1,5 @@
-Hans:Muster:M:2700 Waterview Pkwy:Address Two:Dallas:TX:75080:9791175366:M
-Ruth:Mueller:N:2800 Waterview Pkwy:Address Two:Dallas:TX:75080:9469633225:F
-Heinz:Kurz:O:2700 Waterview Pkwy:Address Two:Dallas:TX:75080:4569871515:M
-Cornelia:Meier:Q:2701 Waterview Pkwy:Address Two:Dallas:TX:75080:7498562626:M
-Werner:Meyer:Z:2722 Waterview Pkwy:Address Two:Dallas:TX:75080:9785584151:M
-Lydia:Kunz:B:2712 Waterview Pkwy:Address Two:Dallas:TX:75080:4698523630:F
-Anna:Best:Z:2733 Waterview Pkwy:Address Two:Dallas:TX:75080:6985554151:F
-Stefan:Meier:S:7740 McCallum Blvd:Address Two:Dallas:TX:75080:9799852265:F
-Martin:Mueller:X:2727 Waterview Pkwy:Address Two:Dallas:TX:75080:9659877451:M
-Hans:Muster:X:7700 Waterview Pkwy:Address Two:Dallas:TX:75080:9729798595:F
+Hrithik:Roshan:P:2700 Waterview Pkwy:Apt #4555:Dallas:TX:75080:4695312650:M
+Durga Sai:Palagummi:P:2700 Waterview Pkwy:Apt #4533:Dallas:TX:75080:4698036380:M
+Rakesh:Roshan:P:2700 Waterview Pkwy:Apt #4521:Dallas:TX:75080:9799299581:M
+Bipasha:Basu:P:7740 McCallum Blvd:Apt #357:Dallas:TX:75252:9799599874:F
+Samantha:Prabhu:R:7740 McCallum Blvd:Apt #357:Dallas:TX:75252:9117445262:F

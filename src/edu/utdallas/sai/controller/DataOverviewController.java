@@ -1,8 +1,11 @@
 package edu.utdallas.sai.controller;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -48,10 +51,37 @@ public class DataOverviewController {
 	@FXML
 	private Button addButton;
 	@FXML
+	private Button updateButton;
+	@FXML
 	private Label statusLabel;
+
+	//Checking the errors will require two lists.
+	private int[] errorList;
+	private HashMap<String, String> errorStrings;
+	@FXML
+	private Label fnStatusLabel;
+	@FXML
+	private Label lnStatusLabel;
+	@FXML
+	private Label mStatusLabel;
+	@FXML
+	private Label adoStatusLabel;
+	@FXML
+	private Label adtStatusLabel;
+	@FXML
+	private Label ctStatusLabel;
+	@FXML
+	private Label stStatusLabel;
+	@FXML
+	private Label zpStatusLabel;
+	@FXML
+	private Label phStatusLabel;
+	@FXML
+	private Label gnStatusLabel;
+	
 	//Reference to mainApp
 	private MainApp mainApp;
-	
+
 
 
 	/**
@@ -59,6 +89,19 @@ public class DataOverviewController {
 	 * The constructor is called before the initialize() method.
 	 */
 	public DataOverviewController() {
+		//Initialize the error helper variables
+		errorList = new int[10]; errorStrings = new HashMap<String, String>();
+		Arrays.fill(errorList, 0);
+		errorStrings.put("nameError", "Should not exceed 20 characters");
+		errorStrings.put("initialError", "Should only be 1 character long");
+		errorStrings.put("addressError", "Should not exceed 35 characters");
+		errorStrings.put("cityError", "Should not exceed 25 characters");
+		errorStrings.put("stateError", "Should not exceed 2 characters");
+		errorStrings.put("zipError", "Should only be numbers");
+		errorStrings.put("zipLength", "Should not exceed 9 characters");
+		errorStrings.put("phoneError", "Should only be numbers");
+		errorStrings.put("phoneLength", "Should not exceed 21 characters");
+		errorStrings.put("genderError", "Should be M/F");
 	}
 
 	/**
@@ -76,15 +119,23 @@ public class DataOverviewController {
 			phoneNumberColumn.setCellValueFactory(
 					cellData -> new SimpleStringProperty(cellData.getValue().getPhoneNumber()));
 		}
+
 		// Clear person details.
 		showPersonDetails(null);
 
-		// Listen for selection changes and show the person details when changed.
-		personTable.getSelectionModel().selectedItemProperty().addListener(
-				(observable, oldValue, newValue) -> showPersonDetails(newValue));
-
 		//Verify all the text fields before adding
 		verifyTextFields();
+		
+	}
+
+	/**
+	 * Method to listen to even changes in the table
+	 */
+	public void onClickOfTable() {
+		// Listen for selection changes and show the person details when changed.
+		personTable.getSelectionModel().selectedItemProperty().addListener(
+				(observable, oldValue, newValue) -> showPersonDetails(newValue)
+				);
 	}
 
 	/**
@@ -149,40 +200,57 @@ public class DataOverviewController {
 			statusLabel.setText("Last name cannot be blank");
 			addButton.setDisable(true);
 		}
-		else if(phoneText.getText().length()==0){
-			statusLabel.setWrapText(true);
-			statusLabel.setText("Phone number cannot be blank");
-			addButton.setDisable(true);
-		}
-		else if(!(zipCodeText.getText().matches("[0-9]+"))) {
-			statusLabel.setWrapText(true);
-			statusLabel.setText("Zip Code should be digits");
-			addButton.setDisable(true);
-		}
-		else if(!(phoneText.getText().matches("[0-9]+"))) {
-			statusLabel.setWrapText(true);
-			statusLabel.setText("Phone Number should be digits");
-			addButton.setDisable(true);
-		}
+//		else if((zipCodeText.getText().length()!=0) && !(zipCodeText.getText().matches("[0-9]+"))) {
+//			statusLabel.setWrapText(true);
+//			statusLabel.setText("Zip Code should be digits");
+//			addButton.setDisable(true);
+//		}
+//		else if(((phoneText.getText().length()!=0) && !(phoneText.getText().matches("[0-9]+")))) {
+//			statusLabel.setWrapText(true);
+//			statusLabel.setText("Phone Number should be digits");
+//			addButton.setDisable(true);
+//		}
+//		else if(middleInitialText.getText().length()>1) {
+//			statusLabel.setWrapText(true);
+//			statusLabel.setText("Middle Initial should be one character");
+//			addButton.setDisable(true);
+//		}
+//		else if(stateText.getText().length()>2) {
+//			statusLabel.setWrapText(true);
+//			statusLabel.setText("State should represented with two characters");
+//			addButton.setDisable(true);
+//		}
+//		else if(genderText.getText().length()>1) {
+//			statusLabel.setWrapText(true);
+//			statusLabel.setText("Gender should be either M/F");
+//			addButton.setDisable(true);
+//		}
 		else {
-			statusLabel.setText("");
-			addButton.setDisable(false);
-			person.setFirstName(firstNameText.getText());
-			person.setLastName(lastNameText.getText());
-			person.setMiddleInitial(middleInitialText.getText().toUpperCase());
-			person.setAddressLineOne(addressLineOneText.getText());
-			person.setAddressLineTwo(addressLineTwoText.getText());
-			person.setCity(cityText.getText());
-			person.setState(stateText.getText().toUpperCase());
-			person.setZipCode(zipCodeText.getText());
-			person.setPhoneNumber(phoneText.getText());
-			person.setGender(genderText.getText().toUpperCase());
-
 			//Check if the person is already existing
 			PersonValidation personCheck = new PersonValidation();
 			personCheck.setMainApp(mainApp);
-
-			if(!personCheck.isExisting(person)){
+			//Set the first, last and middle name for validation purposes
+			person.setFirstName(firstNameText.getText());
+			person.setLastName(lastNameText.getText());
+			person.setMiddleInitial(middleInitialText.getText().toUpperCase());
+			if(personCheck.isExisting(person)){
+				statusLabel.setWrapText(true);
+				statusLabel.setText("This person "
+						+person.getFirstName()+" "
+						+person.getMiddleInitial()+","
+						+person.getLastName()+
+						" is already available in the database");
+			}
+			else {
+				statusLabel.setText("");
+				addButton.setDisable(false);
+				person.setAddressLineOne(addressLineOneText.getText());
+				person.setAddressLineTwo(addressLineTwoText.getText());
+				person.setCity(cityText.getText());
+				person.setState(stateText.getText().toUpperCase());
+				person.setZipCode(zipCodeText.getText());
+				person.setPhoneNumber(phoneText.getText());
+				person.setGender(genderText.getText().toUpperCase());
 				//Adding to personData will help to display the new entry in the app
 				mainApp.getPersonData().add(person);
 				//Creating the file path and assigning mainApp reference to PersonValidation class
@@ -190,14 +258,6 @@ public class DataOverviewController {
 				FileUtil psvObject = new FileUtil();
 				psvObject.setMainApp(mainApp);
 				psvObject.savePersonDataToFile(file, person);
-			}
-			else {
-				statusLabel.setWrapText(true);
-				statusLabel.setText("This person "
-						+person.getFirstName()+" "
-						+person.getMiddleInitial()+","
-						+person.getLastName()+
-						" is already available in the database");
 			}
 		}
 	}
@@ -209,13 +269,17 @@ public class DataOverviewController {
 	private void handleDeletePerson() {
 		int selectedIndex = personTable.getSelectionModel().getSelectedIndex();
 		String firstNameToBeDeteled = null;
+		String lastName = null;
+		String middleInitial = null;
 		if(selectedIndex >=0 ) {
 			firstNameToBeDeteled = personTable.getItems().get(selectedIndex).getFirstName();
+			lastName = personTable.getItems().get(selectedIndex).getLastName();
+			middleInitial = personTable.getItems().get(selectedIndex).getMiddleInitial();
 			//Creating the file path and assigning mainApp reference to PersonValidation class
 			String fileName = "./db_file.txt";
 			FileUtil psvObject = new FileUtil();
 			psvObject.setMainApp(mainApp);
-			psvObject.deletePersonFromFile(fileName, firstNameToBeDeteled);
+			psvObject.deletePersonFromFile(fileName, firstNameToBeDeteled, lastName, middleInitial);
 			statusLabel.setWrapText(true);
 			statusLabel.setText("Deleted "
 					+personTable.getItems().get(selectedIndex).getFirstName()+
@@ -235,203 +299,299 @@ public class DataOverviewController {
 	/**
 	 * 
 	 */
+	public void handleUpdatePerson() {
+		//statusLabel.setText("Update button pressed!");
+		int selectedIndex = personTable.getSelectionModel().getSelectedIndex();
+		String firstNameToBeUpdated = null;
+		String lastName = null;
+		String middleInitial = null;
+		FileUtil psvObject = new FileUtil();
+		if(selectedIndex >=0 ) {
+			firstNameToBeUpdated = personTable.getItems().get(selectedIndex).getFirstName();
+			lastName = personTable.getItems().get(selectedIndex).getLastName();
+			middleInitial = personTable.getItems().get(selectedIndex).getMiddleInitial();
+			Person person = new Person();
+			if(firstNameText.getText().length()==0){
+				statusLabel.setWrapText(true);
+				statusLabel.setText("First name cannot be blank");
+				addButton.setDisable(true);
+			}
+			else if(lastNameText.getText().length()==0){
+				statusLabel.setWrapText(true);
+				statusLabel.setText("Last name cannot be blank");
+				addButton.setDisable(true);
+			}
+//			else if(phoneText.getText().length()==0){
+//				statusLabel.setWrapText(true);
+//				statusLabel.setText("Phone number cannot be blank");
+//				addButton.setDisable(true);
+//			}
+//			else if(!(zipCodeText.getText().matches("[0-9]+"))) {
+//				statusLabel.setWrapText(true);
+//				statusLabel.setText("Zip Code should be digits");
+//				addButton.setDisable(true);
+//			}
+//			else if(!(phoneText.getText().matches("[0-9]+"))) {
+//				statusLabel.setWrapText(true);
+//				statusLabel.setText("Phone Number should be digits");
+//				addButton.setDisable(true);
+//			}
+			else {
+				//Check if the person is already existing
+				PersonValidation personCheck = new PersonValidation();
+				personCheck.setMainApp(mainApp);
+				
+				if(firstNameText.getText()!=null) person.setFirstName(firstNameText.getText()); else person.setFirstName(null);
+				if(lastNameText.getText()!=null) person.setLastName(lastNameText.getText()); else person.setLastName(null);
+				if(middleInitialText.getText()!=null) person.setMiddleInitial(middleInitialText.getText().toUpperCase()); else person.setMiddleInitial(null);
+				if(addressLineOneText.getText()!=null) person.setAddressLineOne(addressLineOneText.getText()); else person.setAddressLineOne(null);
+				if(addressLineTwoText.getText()!=null) person.setAddressLineTwo(addressLineTwoText.getText()); else person.setAddressLineTwo(null);
+				if(cityText.getText()!=null) person.setCity(cityText.getText()); else person.setCity(null);
+				if(stateText.getText()!=null) person.setState(stateText.getText().toUpperCase()); else person.setState(null);
+				if(zipCodeText.getText()!=null) person.setZipCode(zipCodeText.getText()); else person.setZipCode(null);
+				if(phoneText.getText()!=null) person.setPhoneNumber(phoneText.getText()); else person.setPhoneNumber(null);
+				if(genderText.getText()!=null) person.setGender(genderText.getText().toUpperCase()); else person.setGender(null);
+				if(personCheck.isUpToDate(person)){
+					statusLabel.setWrapText(true);
+					statusLabel.setText("This person "
+							+person.getFirstName()+" "
+							+person.getMiddleInitial()+","
+							+person.getLastName()+
+							" is already up-to-date in the database");
+					
+				}
+				else {
+					statusLabel.setText("");
+					addButton.setDisable(false);
+
+
+					//Adding to personData will help to display the new entry in the app
+					mainApp.getPersonData().add(person);
+					//Creating the file path and assigning mainApp reference to PersonValidation class
+					String fileName = "./db_file.txt";
+					psvObject.setMainApp(mainApp);
+					psvObject.updatePersonInFile(fileName, firstNameToBeUpdated, lastName, middleInitial, person);
+					statusLabel.setWrapText(true);
+					statusLabel.setText("Hello World!");
+					statusLabel.setText("Updated "
+							+personTable.getItems().get(selectedIndex).getFirstName()+
+							" in the table");
+					System.out.println("Updated "
+							+personTable.getItems().get(selectedIndex).getFirstName()+
+							" in the table");
+					personTable.getItems().remove(selectedIndex);
+				}
+	
+			}
+		}
+		else{
+			updateButton.setDisable(false);
+		}
+
+	}
+
+	/**
+	 * This method is used to validate all the business logic
+	 */
 	@FXML
 	public void verifyTextFields() {
-		// Listen for TextField text changes
-
-		//firstName check
-		firstNameText.textProperty().addListener(new ChangeListener<String>() {
+		
+		ChangeListener<String> textListener = new ChangeListener<String>() {
+			
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if(newValue.length()>20) {
-					statusLabel.setWrapText(true);
-					statusLabel.setText("First name should not be more than 20 characters.");
-					addButton.setDisable(true);
-				}
-				else {
-					statusLabel.setText("");
-					addButton.setDisable(false);
-				}
-			}
-		});
-
-
-		//lastName check
-		lastNameText.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				if(newValue.length()>20) {
-					statusLabel.setWrapText(true);
-					statusLabel.setText("Last name should not be more than 20 characters.");
-					addButton.setDisable(true);
-				}
-				else {
-					statusLabel.setText("");
-					addButton.setDisable(false);
-				}
-			}
-		});
-
-
-		//MiddleInitial check
-		middleInitialText.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				if(newValue.length()>1) {
-					statusLabel.setWrapText(true);
-					statusLabel.setText("Middle initial should only be a single character");
-					addButton.setDisable(true);
-				}
-				else {
-					statusLabel.setText("");
-					addButton.setDisable(false);
-				}
-			}
-		});
-
-
-		//AddressLineOne check
-		addressLineOneText.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				if(newValue.length()>35) {
-					statusLabel.setWrapText(true);
-					statusLabel.setText("Address fields should not exceed 35 characters each");
-					addButton.setDisable(true);
-				}
-				else {
-					statusLabel.setText("");
-					addButton.setDisable(false);
-				}
-			}
-		});
-
-		//AddressLineTwo check
-		addressLineTwoText.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				if(newValue.length()>35) {
-					statusLabel.setWrapText(true);
-					statusLabel.setText("Address fields should not exceed 35 characters each");
-					addButton.setDisable(true);
-				}
-				else {
-					statusLabel.setText("");
-					addButton.setDisable(false);
-				}
-			}
-		});
-
-
-		//city check
-		cityText.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				if(newValue.length()>25) {
-					statusLabel.setWrapText(true);
-					statusLabel.setText("City name should not exceed 25 characters");
-					addButton.setDisable(true);
-				}
-				else {
-					statusLabel.setText("");
-					addButton.setDisable(false);
-				}
-			}
-		});
-
-
-		//state check
-		stateText.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				if(newValue.length()>2) {
-					statusLabel.setWrapText(true);
-					statusLabel.setText("Please enter the two-lettered-code for your state");
-					addButton.setDisable(true);
-				}
-				else {
-					statusLabel.setText("");
-					addButton.setDisable(false);
-				}
-			}
-		});
-
-
-		//zip check
-		zipCodeText.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				if(newValue.length()==0 || newValue==null) statusLabel.setText("");
-				if(!(newValue.matches("[0-9]+"))){
-					statusLabel.setWrapText(true);
-					statusLabel.setText("Please enter numbers only");
-					addButton.setDisable(true);
-				}
-				else{
-					statusLabel.setText("");
-					addButton.setDisable(false);
-					if(newValue.length()>9) {
-						statusLabel.setText("Zip code should not exceed 9 digits");
-						addButton.setDisable(true);
+				StringProperty obsVal = (StringProperty) observable;
+				TextField observedTextField = (TextField) obsVal.getBean();
+				if(observedTextField==firstNameText) {
+					if((newValue!=null)&&newValue.length()>20) {
+//						statusLabel.setWrapText(true);
+//						statusLabel.setText("First name should not be more than 20 characters.");
+//						addButton.setDisable(true);
+						fnStatusLabel.setText(errorStrings.get("nameError"));
+						errorList[0]=1;
 					}
 					else {
-						statusLabel.setText("");
-						addButton.setDisable(false);
+						fnStatusLabel.setText("");
+						errorList[0]=0;
+//						addButton.setDisable(false);
 					}
+					
 				}
-
-			}
-		});
-
-
-		//phone check
-		phoneText.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				if(!(newValue.matches("[0-9]+"))){
-					statusLabel.setWrapText(true);
-					statusLabel.setText("Please enter numbers only");
-					addButton.setDisable(true);
-				}
-				else{
-					statusLabel.setText("");
-					addButton.setDisable(false);
-					if(newValue.length()>21) {
-						statusLabel.setText("Zip code should not exceed 21 digits");
-						addButton.setDisable(true);
+				else if (observedTextField==lastNameText) {
+					if((newValue!=null)&&newValue.length()>20) {
+//						statusLabel.setWrapText(true);
+//						statusLabel.setText("Last name should not be more than 20 characters.");
+//						addButton.setDisable(true);
+						errorList[1]=1;
+						lnStatusLabel.setText(errorStrings.get("nameError"));
 					}
 					else {
-						statusLabel.setText("");
-						addButton.setDisable(false);
+						lnStatusLabel.setText("");
+						errorList[1]=0;
+//						addButton.setDisable(false);
+					}
+					
+				}
+				else if (observedTextField==middleInitialText) {
+					if((newValue!=null)&&newValue.length()>1) {
+//						statusLabel.setWrapText(true);
+//						statusLabel.setText("Middle initial should only be a single character");
+//						addButton.setDisable(true);
+						errorList[2]=1;
+						mStatusLabel.setText(errorStrings.get("initialError"));
+					}
+					else {
+						mStatusLabel.setText("");
+						errorList[2]=0;
+//						addButton.setDisable(false);
+					}
+					
+				}
+				else if (observedTextField==addressLineOneText) {
+					if((newValue!=null)&&newValue.length()>35) {
+//						statusLabel.setWrapText(true);
+//						statusLabel.setText("Address fields should not exceed 35 characters each");
+//						addButton.setDisable(true);
+						errorList[3]=1;
+						adoStatusLabel.setText(errorStrings.get("addressError"));
+					}
+					else {
+						adoStatusLabel.setText("");
+						errorList[3]=0;
+//						addButton.setDisable(false);
+					}
+					
+				}
+				else if (observedTextField==addressLineTwoText) {
+					if((newValue!=null)&&newValue.length()>35) {
+//						statusLabel.setWrapText(true);
+//						statusLabel.setText("Address fields should not exceed 35 characters each");
+//						addButton.setDisable(true);
+						errorList[4]=1;
+						adtStatusLabel.setText(errorStrings.get("addressError"));
+					}
+					else {
+						adtStatusLabel.setText("");
+						errorList[4]=0;
+//						addButton.setDisable(false);
+					}
+				}
+				else if (observedTextField==cityText) {
+					if((newValue!=null)&&newValue.length()>25) {
+//						statusLabel.setWrapText(true);
+//						statusLabel.setText("City name should not exceed 25 characters");
+//						addButton.setDisable(true);
+						errorList[5]=1;
+						ctStatusLabel.setText(errorStrings.get("cityError"));
+					}
+					else {
+						ctStatusLabel.setText("");
+						errorList[5]=0;
+//						addButton.setDisable(false);
+					}
+				}
+				else if (observedTextField==stateText) {
+					if((newValue!=null)&&newValue.length()>2) {
+//						statusLabel.setWrapText(true);
+//						statusLabel.setText("Please enter the two-lettered-code for your state");
+//						addButton.setDisable(true);
+						errorList[6]=1;
+						stStatusLabel.setText(errorStrings.get("stateError"));
+					}
+					else {
+						stStatusLabel.setText("");
+						errorList[6]=0;
+//						addButton.setDisable(false);
+					}
+				}
+				else if (observedTextField==zipCodeText) {
+//					if((newValue!=null)&&newValue.length()==0 || newValue==null) statusLabel.setText("");
+					if((newValue!=null)&&!(newValue.matches("[0-9]+"))){
+//						statusLabel.setWrapText(true);
+						zpStatusLabel.setText(errorStrings.get("zipError"));
+//						addButton.setDisable(true);
+						errorList[7]=1;
+					}
+					else{
+//						addButton.setDisable(false);
+						zpStatusLabel.setText("");
+						if((newValue!=null)&&newValue.length()>9) {
+							zpStatusLabel.setText(errorStrings.get("zipLength"));
+//							addButton.setDisable(true);
+							errorList[7]=1;
+						}
+						else {
+							zpStatusLabel.setText("");
+							errorList[7]=0;
+//							addButton.setDisable(false);
+						}
+					}
+				}
+				else if (observedTextField==phoneText) {
+					if((newValue!=null)&&!(newValue.matches("[0-9]+"))){
+//						statusLabel.setWrapText(true);
+//						statusLabel.setText("Please enter numbers only");
+//						addButton.setDisable(true);
+						errorList[8]=1;
+						phStatusLabel.setText(errorStrings.get("phoneError"));
+					}
+					else{
+//						addButton.setDisable(false);
+//						statusLabel.setText("");
+						phStatusLabel.setText("");
+						if((newValue!=null)&&newValue.length()>21) {
+							phStatusLabel.setText(errorStrings.get("phoneLength"));
+//							addButton.setDisable(true);
+							errorList[8]=1;
+						}
+						else {
+							phStatusLabel.setText("");
+//							statusLabel.setText("");
+							errorList[8]=0;
+//							addButton.setDisable(false);
+						}
+					}
+				}
+				else if (observedTextField==genderText) {
+					if((newValue!=null)&&!(newValue.equalsIgnoreCase("m") || newValue.equalsIgnoreCase("f"))) {
+//						statusLabel.setText("Enter either M/F");
+//						addButton.setDisable(true);
+						errorList[9]=1;
+						gnStatusLabel.setText(errorStrings.get("genderError"));
+					}
+					else {
+						gnStatusLabel.setText("");
+						errorList[9]=0;
+//						addButton.setDisable(false);
 					}
 				}
 
-			}
-		});
-
-		//gender check
-		genderText.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				if(!(newValue.equalsIgnoreCase("m") || newValue.equalsIgnoreCase("f"))) {
-					statusLabel.setText("Enter either M/F");
-					addButton.setDisable(true);
+				int flag = -1;
+				for (int error : errorList) {
+					if(error==1) flag = 1;
+				}
+				if(flag==-1) {
+					addButton.setDisable(false);
+					updateButton.setDisable(false);
 				}
 				else {
-					statusLabel.setText("");
-					addButton.setDisable(false);
+					addButton.setDisable(true);
+					updateButton.setDisable(true);
 				}
 			}
-		});
+		}; 
+
+		firstNameText.textProperty().addListener(textListener);
+		lastNameText.textProperty().addListener(textListener);
+		middleInitialText.textProperty().addListener(textListener);
+		addressLineOneText.textProperty().addListener(textListener);
+		addressLineTwoText.textProperty().addListener(textListener);
+		cityText.textProperty().addListener(textListener);
+		stateText.textProperty().addListener(textListener);
+		zipCodeText.textProperty().addListener(textListener);
+		phoneText.textProperty().addListener(textListener);
+		genderText.textProperty().addListener(textListener);
+
 	}
 }
