@@ -1,6 +1,5 @@
 package edu.utdallas.sai;
 
-import java.io.File;
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -15,6 +14,7 @@ import javafx.stage.Stage;
 import edu.utdallas.sai.controller.DataOverviewController;
 import edu.utdallas.sai.model.Person;
 import edu.utdallas.sai.util.FileUtil;
+import edu.utdallas.sai.util.MyLogger;
 
 /***
  * This is the main application class.
@@ -27,7 +27,6 @@ public class MainApp extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-
 
 	/**
 	 * The data as an observable list of Persons.
@@ -46,9 +45,13 @@ public class MainApp extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("Data Entry");
+		this.primaryStage.setTitle("Contact Manager");
 		initRootLayout();
 		showPersonOverview();
+		//Set minimum size for the application
+		//User will not be able to reduce resolution beyond this point
+		this.primaryStage.setMinHeight(820.0);
+		this.primaryStage.setMinWidth(1050.0);
 		//Application icon
 		this.primaryStage.getIcons().add(new Image("file:resources/images/address.png"));
 	}
@@ -57,6 +60,7 @@ public class MainApp extends Application {
 	 * Initializes the root layout.
 	 */
 	public void initRootLayout() {
+
 		try {
 			// Load root layout from fxml file.
 			FXMLLoader loader = new FXMLLoader();
@@ -68,13 +72,12 @@ public class MainApp extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (IOException e) {
-			e.printStackTrace();
+			MyLogger.writeToLog(this.getClass().getName(), e.getMessage());
 		}
-
-		File file = new File("./db_file.txt");
+		//Load the person details from the text file
 		FileUtil psvObject = new FileUtil();
 		psvObject.setMainApp(this);
-		psvObject.loadPersonDataFromFile(file);
+		psvObject.loadPersonDataFromFile();
 
 	}
 
@@ -91,12 +94,12 @@ public class MainApp extends Application {
 			// Set person overview into the center of root layout.
 			rootLayout.setCenter(personOverview);
 
-			//			// Give the controller access to the main app.
+			// Give the controller access to the main app.
 			DataOverviewController controller = loader.getController();
 			controller.setMainApp(this);
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			MyLogger.writeToLog(this.getClass().getName(), e.getMessage());
 		}
 	}
 

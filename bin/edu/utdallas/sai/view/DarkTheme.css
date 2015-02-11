@@ -30,6 +30,13 @@
 	-fx-opacity: 0.75;
 }
 
+#warning {
+	-fx-font-size: 14pt;
+	-fx-font-family: "Calibri";
+	-fx-text-fill: black;
+	-fx-opacity: 1;
+}
+
 .table-view {
     -fx-base: #9E9E9E;
     -fx-control-inner-background: #9E9E9E;
@@ -46,7 +53,7 @@
     -fx-border-width: 0 0 1 0;
     -fx-background-color: transparent;
     -fx-border-color: 
-        transparent
+        grey
         transparent
         derive(-fx-base, 80%) 
         transparent;
@@ -90,8 +97,9 @@
     -fx-border-width: 2;
     -fx-background-radius: 0;
     -fx-background-color: #9E9E9E;
-    -fx-font-family: "Calibri", Helvetica, Arial, sans-serif;
+    -fx-font-family: "Calibri";
     -fx-font-size: 11pt;
+    -fx-font-weight: bold;
     -fx-text-fill: #000000;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
 }
@@ -102,7 +110,7 @@
 
 .button:pressed, .button:default:hover:pressed {
   -fx-background-color: white;
-  -fx-text-fill: #1d1d1d;
+  -fx-text-fill: black;
 }
 
 .button:focused {

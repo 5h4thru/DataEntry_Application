@@ -1,6 +1,5 @@
 package edu.utdallas.sai.controller;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -78,10 +77,9 @@ public class DataOverviewController {
 	private Label phStatusLabel;
 	@FXML
 	private Label gnStatusLabel;
-	
+
 	//Reference to mainApp
 	private MainApp mainApp;
-
 
 
 	/**
@@ -89,6 +87,7 @@ public class DataOverviewController {
 	 * The constructor is called before the initialize() method.
 	 */
 	public DataOverviewController() {
+
 		//Initialize the error helper variables
 		errorList = new int[10]; errorStrings = new HashMap<String, String>();
 		Arrays.fill(errorList, 0);
@@ -113,8 +112,7 @@ public class DataOverviewController {
 		// Initialize the person table with the two columns.
 		if(nameColumn!=null && phoneNumberColumn!=null){
 			nameColumn.setCellValueFactory(
-					cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()+" "+
-							cellData.getValue().getMiddleInitial()+", "+
+					cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()+", "+
 							cellData.getValue().getLastName()));
 			phoneNumberColumn.setCellValueFactory(
 					cellData -> new SimpleStringProperty(cellData.getValue().getPhoneNumber()));
@@ -125,17 +123,25 @@ public class DataOverviewController {
 
 		//Verify all the text fields before adding
 		verifyTextFields();
-		
+
+		//Initially disable delete button
+		deleteButton.setDisable(true);
 	}
 
 	/**
 	 * Method to listen to even changes in the table
 	 */
 	public void onClickOfTable() {
-		// Listen for selection changes and show the person details when changed.
-		personTable.getSelectionModel().selectedItemProperty().addListener(
-				(observable, oldValue, newValue) -> showPersonDetails(newValue)
-				);
+		personTable.setItems(mainApp.getPersonData());
+		//Re-enable delete button
+		deleteButton.setDisable(false);
+		//Clear the status message
+		statusLabel.setText("");
+
+		//This following code will solve the problem that
+		//when there is only one person left in the list,
+		//user was not able to select the person and populate the text fields
+		showPersonDetails(mainApp.getPersonData().get(personTable.getSelectionModel().selectedIndexProperty().get()));
 	}
 
 	/**
@@ -190,41 +196,38 @@ public class DataOverviewController {
 	@FXML
 	private void handleAddPerson() {
 		Person person = new Person();
-		if(firstNameText.getText().length()==0){
-			statusLabel.setWrapText(true);
-			statusLabel.setText("First name cannot be blank");
+		if(firstNameText.getText()==null || firstNameText.getText().length()==0){
+			fnStatusLabel.setText("Cannot be blank");
 			addButton.setDisable(true);
 		}
-		else if(lastNameText.getText().length()==0){
-			statusLabel.setWrapText(true);
-			statusLabel.setText("Last name cannot be blank");
+		else if(lastNameText.getText()==null || lastNameText.getText().length()==0){
+			lnStatusLabel.setText("Cannot be blank");
 			addButton.setDisable(true);
 		}
-//		else if((zipCodeText.getText().length()!=0) && !(zipCodeText.getText().matches("[0-9]+"))) {
-//			statusLabel.setWrapText(true);
-//			statusLabel.setText("Zip Code should be digits");
-//			addButton.setDisable(true);
-//		}
-//		else if(((phoneText.getText().length()!=0) && !(phoneText.getText().matches("[0-9]+")))) {
-//			statusLabel.setWrapText(true);
-//			statusLabel.setText("Phone Number should be digits");
-//			addButton.setDisable(true);
-//		}
-//		else if(middleInitialText.getText().length()>1) {
-//			statusLabel.setWrapText(true);
-//			statusLabel.setText("Middle Initial should be one character");
-//			addButton.setDisable(true);
-//		}
-//		else if(stateText.getText().length()>2) {
-//			statusLabel.setWrapText(true);
-//			statusLabel.setText("State should represented with two characters");
-//			addButton.setDisable(true);
-//		}
-//		else if(genderText.getText().length()>1) {
-//			statusLabel.setWrapText(true);
-//			statusLabel.setText("Gender should be either M/F");
-//			addButton.setDisable(true);
-//		}
+		else if(addressLineOneText.getText()==null || addressLineOneText.getText().length()==0){
+			adoStatusLabel.setText("Cannot be blank");
+			addButton.setDisable(true);
+		}
+		else if(cityText.getText()==null || cityText.getText().length()==0){
+			ctStatusLabel.setText("Cannot be blank");
+			addButton.setDisable(true);
+		}
+		else if(stateText.getText()==null || stateText.getText().length()==0){
+			stStatusLabel.setText("Cannot be blank");
+			addButton.setDisable(true);
+		}
+		else if(zipCodeText.getText()==null || zipCodeText.getText().length()==0){
+			zpStatusLabel.setText("Cannot be blank");
+			addButton.setDisable(true);
+		}
+		else if(phoneText.getText()==null || phoneText.getText().length()==0){
+			phStatusLabel.setText("Cannot be blank");
+			addButton.setDisable(true);
+		}
+		else if(genderText.getText()==null || genderText.getText().length()==0){
+			gnStatusLabel.setText("Cannot be blank");
+			addButton.setDisable(true);
+		}
 		else {
 			//Check if the person is already existing
 			PersonValidation personCheck = new PersonValidation();
@@ -232,20 +235,24 @@ public class DataOverviewController {
 			//Set the first, last and middle name for validation purposes
 			person.setFirstName(firstNameText.getText());
 			person.setLastName(lastNameText.getText());
-			person.setMiddleInitial(middleInitialText.getText().toUpperCase());
+			if (middleInitialText.getText()!=null) person.setMiddleInitial(middleInitialText.getText().toUpperCase()); else person.setMiddleInitial("");
 			if(personCheck.isExisting(person)){
 				statusLabel.setWrapText(true);
 				statusLabel.setText("This person "
 						+person.getFirstName()+" "
-						+person.getMiddleInitial()+","
+						+person.getMiddleInitial()+" "
 						+person.getLastName()+
-						" is already available in the database");
+						" is already available.");
 			}
 			else {
-				statusLabel.setText("");
+				statusLabel.setText("Added "
+						+firstNameText.getText()+" "
+						+middleInitialText.getText()+" "
+						+lastNameText.getText()+" "+
+						"in the table.");
 				addButton.setDisable(false);
 				person.setAddressLineOne(addressLineOneText.getText());
-				person.setAddressLineTwo(addressLineTwoText.getText());
+				if (addressLineTwoText.getText()!=null) person.setAddressLineTwo(addressLineTwoText.getText()); else person.setAddressLineTwo("");
 				person.setCity(cityText.getText());
 				person.setState(stateText.getText().toUpperCase());
 				person.setZipCode(zipCodeText.getText());
@@ -253,13 +260,133 @@ public class DataOverviewController {
 				person.setGender(genderText.getText().toUpperCase());
 				//Adding to personData will help to display the new entry in the app
 				mainApp.getPersonData().add(person);
-				//Creating the file path and assigning mainApp reference to PersonValidation class
-				File file = new File("./db_file.txt");
+				//Assigning mainApp reference to PersonValidation class
 				FileUtil psvObject = new FileUtil();
 				psvObject.setMainApp(mainApp);
-				psvObject.savePersonDataToFile(file, person);
+				psvObject.savePersonDataToFile(person);
+				/*Disable the delete button once a single transaction is complete*/ deleteButton.setDisable(true);
+				// Clear the fields once added. Can do this by setting the textfields to setText("")
+				firstNameText.setText("");
+				lastNameText.setText("");
+				middleInitialText.setText("");
+				addressLineOneText.setText("");
+				addressLineTwoText.setText("");
+				cityText.setText("");
+				stateText.setText("");
+				zipCodeText.setText("");
+				phoneText.setText("");
+				genderText.setText("");
+
 			}
 		}
+	}
+
+
+	/**
+	 * Called when the user clicks on update button
+	 */
+	public void handleUpdatePerson() {
+		//statusLabel.setText("Update button pressed!");
+		int selectedIndex = personTable.getSelectionModel().getSelectedIndex();
+		String firstNameToBeUpdated = null;
+		String lastName = null;
+		String middleInitial = null;
+		FileUtil psvObject = new FileUtil();
+		if(selectedIndex >=0 ) {
+			firstNameToBeUpdated = personTable.getItems().get(selectedIndex).getFirstName();
+			lastName = personTable.getItems().get(selectedIndex).getLastName();
+			middleInitial = personTable.getItems().get(selectedIndex).getMiddleInitial();
+			Person person = new Person();
+			if(firstNameText.getText()==null || firstNameText.getText().length()==0){
+				fnStatusLabel.setText("Cannot be blank");
+				updateButton.setDisable(true);
+			}
+			else if(lastNameText.getText()==null || lastNameText.getText().length()==0){
+				lnStatusLabel.setText("Cannot be blank");
+				updateButton.setDisable(true);
+			}
+			else if(addressLineOneText.getText()==null || addressLineOneText.getText().length()==0){
+				adoStatusLabel.setText("Cannot be blank");
+				updateButton.setDisable(true);
+			}
+			else if(cityText.getText()==null || cityText.getText().length()==0){
+				ctStatusLabel.setText("Cannot be blank");
+				updateButton.setDisable(true);
+			}
+			else if(stateText.getText()==null || stateText.getText().length()==0){
+				stStatusLabel.setText("Cannot be blank");
+				updateButton.setDisable(true);
+			}
+			else if(zipCodeText.getText()==null || zipCodeText.getText().length()==0){
+				zpStatusLabel.setText("Cannot be blank");
+				updateButton.setDisable(true);
+			}
+			else if(phoneText.getText()==null || phoneText.getText().length()==0){
+				phStatusLabel.setText("Cannot be blank");
+				updateButton.setDisable(true);
+			}
+			else if(genderText.getText()==null || genderText.getText().length()==0){
+				gnStatusLabel.setText("Cannot be blank");
+				updateButton.setDisable(true);
+			}
+			else {
+				//Check if the person is already existing
+				PersonValidation personCheck = new PersonValidation();
+				personCheck.setMainApp(mainApp);
+
+				person.setFirstName(firstNameText.getText());
+				person.setLastName(lastNameText.getText());
+				if (middleInitialText.getText()!=null) person.setMiddleInitial(middleInitialText.getText().toUpperCase()); else person.setMiddleInitial("");
+				person.setAddressLineOne(addressLineOneText.getText());
+				if (addressLineTwoText.getText()!=null) person.setAddressLineTwo(addressLineTwoText.getText()); else person.setAddressLineTwo("");
+				person.setCity(cityText.getText());
+				person.setState(stateText.getText().toUpperCase());
+				person.setZipCode(zipCodeText.getText());
+				person.setPhoneNumber(phoneText.getText());
+				person.setGender(genderText.getText().toUpperCase());
+				if(personCheck.isUpToDate(person)){
+					statusLabel.setWrapText(true);
+					statusLabel.setText("This person "
+							+person.getFirstName()+" "
+							+person.getMiddleInitial()+" "
+							+person.getLastName()+
+							" is already up-to-date.");
+
+				}
+				else {
+					statusLabel.setText("");
+					updateButton.setDisable(false);
+					//Adding to personData will help to display the new entry in the app
+					mainApp.getPersonData().add(person);
+					//Creating the file path and assigning mainApp reference to PersonValidation class
+					psvObject.setMainApp(mainApp);
+					psvObject.updatePersonInFile(firstNameToBeUpdated, lastName, middleInitial, person);
+					statusLabel.setWrapText(true);
+					statusLabel.setText("Updated "
+							+personTable.getItems().get(selectedIndex).getFirstName()+" "
+							+personTable.getItems().get(selectedIndex).getMiddleInitial()+" "
+							+personTable.getItems().get(selectedIndex).getLastName()+" "
+							+" in the table.");
+					personTable.getItems().remove(selectedIndex);
+					/*Disable the delete button once a single transaction is complete*/ deleteButton.setDisable(true);
+					// Clear the fields once added. Can do this by setting the textfields to setText("")
+					firstNameText.setText("");
+					lastNameText.setText("");
+					middleInitialText.setText("");
+					addressLineOneText.setText("");
+					addressLineTwoText.setText("");
+					cityText.setText("");
+					stateText.setText("");
+					zipCodeText.setText("");
+					phoneText.setText("");
+					genderText.setText("");		
+				}
+			}
+		}
+		else{
+			updateButton.setDisable(false);
+		}
+
 	}
 
 	/**
@@ -275,16 +402,30 @@ public class DataOverviewController {
 			firstNameToBeDeteled = personTable.getItems().get(selectedIndex).getFirstName();
 			lastName = personTable.getItems().get(selectedIndex).getLastName();
 			middleInitial = personTable.getItems().get(selectedIndex).getMiddleInitial();
-			//Creating the file path and assigning mainApp reference to PersonValidation class
-			String fileName = "./db_file.txt";
+			//Assigning mainApp reference to PersonValidation class
 			FileUtil psvObject = new FileUtil();
 			psvObject.setMainApp(mainApp);
-			psvObject.deletePersonFromFile(fileName, firstNameToBeDeteled, lastName, middleInitial);
+			psvObject.deletePersonFromFile(firstNameToBeDeteled, lastName, middleInitial);
 			statusLabel.setWrapText(true);
 			statusLabel.setText("Deleted "
-					+personTable.getItems().get(selectedIndex).getFirstName()+
-					" from the table");
+					+personTable.getItems().get(selectedIndex).getFirstName()+" "
+					+personTable.getItems().get(selectedIndex).getMiddleInitial()+" "
+					+personTable.getItems().get(selectedIndex).getLastName()+" "
+					+" from the table.");
 			personTable.getItems().remove(selectedIndex);
+			/*Disable the delete button once a single transaction is complete*/ deleteButton.setDisable(true);
+			// Clear the fields once added. Can do this by setting the textfields to setText("")
+			firstNameText.setText("");
+			lastNameText.setText("");
+			middleInitialText.setText("");
+			addressLineOneText.setText("");
+			addressLineTwoText.setText("");
+			cityText.setText("");
+			stateText.setText("");
+			zipCodeText.setText("");
+			phoneText.setText("");
+			genderText.setText("");
+
 			selectedIndex = personTable.getSelectionModel().getSelectedIndex();
 			if(selectedIndex == -1) {
 				deleteButton.setDisable(true);
@@ -297,273 +438,134 @@ public class DataOverviewController {
 	}
 
 	/**
-	 * 
-	 */
-	public void handleUpdatePerson() {
-		//statusLabel.setText("Update button pressed!");
-		int selectedIndex = personTable.getSelectionModel().getSelectedIndex();
-		String firstNameToBeUpdated = null;
-		String lastName = null;
-		String middleInitial = null;
-		FileUtil psvObject = new FileUtil();
-		if(selectedIndex >=0 ) {
-			firstNameToBeUpdated = personTable.getItems().get(selectedIndex).getFirstName();
-			lastName = personTable.getItems().get(selectedIndex).getLastName();
-			middleInitial = personTable.getItems().get(selectedIndex).getMiddleInitial();
-			Person person = new Person();
-			if(firstNameText.getText().length()==0){
-				statusLabel.setWrapText(true);
-				statusLabel.setText("First name cannot be blank");
-				addButton.setDisable(true);
-			}
-			else if(lastNameText.getText().length()==0){
-				statusLabel.setWrapText(true);
-				statusLabel.setText("Last name cannot be blank");
-				addButton.setDisable(true);
-			}
-//			else if(phoneText.getText().length()==0){
-//				statusLabel.setWrapText(true);
-//				statusLabel.setText("Phone number cannot be blank");
-//				addButton.setDisable(true);
-//			}
-//			else if(!(zipCodeText.getText().matches("[0-9]+"))) {
-//				statusLabel.setWrapText(true);
-//				statusLabel.setText("Zip Code should be digits");
-//				addButton.setDisable(true);
-//			}
-//			else if(!(phoneText.getText().matches("[0-9]+"))) {
-//				statusLabel.setWrapText(true);
-//				statusLabel.setText("Phone Number should be digits");
-//				addButton.setDisable(true);
-//			}
-			else {
-				//Check if the person is already existing
-				PersonValidation personCheck = new PersonValidation();
-				personCheck.setMainApp(mainApp);
-				
-				if(firstNameText.getText()!=null) person.setFirstName(firstNameText.getText()); else person.setFirstName(null);
-				if(lastNameText.getText()!=null) person.setLastName(lastNameText.getText()); else person.setLastName(null);
-				if(middleInitialText.getText()!=null) person.setMiddleInitial(middleInitialText.getText().toUpperCase()); else person.setMiddleInitial(null);
-				if(addressLineOneText.getText()!=null) person.setAddressLineOne(addressLineOneText.getText()); else person.setAddressLineOne(null);
-				if(addressLineTwoText.getText()!=null) person.setAddressLineTwo(addressLineTwoText.getText()); else person.setAddressLineTwo(null);
-				if(cityText.getText()!=null) person.setCity(cityText.getText()); else person.setCity(null);
-				if(stateText.getText()!=null) person.setState(stateText.getText().toUpperCase()); else person.setState(null);
-				if(zipCodeText.getText()!=null) person.setZipCode(zipCodeText.getText()); else person.setZipCode(null);
-				if(phoneText.getText()!=null) person.setPhoneNumber(phoneText.getText()); else person.setPhoneNumber(null);
-				if(genderText.getText()!=null) person.setGender(genderText.getText().toUpperCase()); else person.setGender(null);
-				if(personCheck.isUpToDate(person)){
-					statusLabel.setWrapText(true);
-					statusLabel.setText("This person "
-							+person.getFirstName()+" "
-							+person.getMiddleInitial()+","
-							+person.getLastName()+
-							" is already up-to-date in the database");
-					
-				}
-				else {
-					statusLabel.setText("");
-					addButton.setDisable(false);
-
-
-					//Adding to personData will help to display the new entry in the app
-					mainApp.getPersonData().add(person);
-					//Creating the file path and assigning mainApp reference to PersonValidation class
-					String fileName = "./db_file.txt";
-					psvObject.setMainApp(mainApp);
-					psvObject.updatePersonInFile(fileName, firstNameToBeUpdated, lastName, middleInitial, person);
-					statusLabel.setWrapText(true);
-					statusLabel.setText("Hello World!");
-					statusLabel.setText("Updated "
-							+personTable.getItems().get(selectedIndex).getFirstName()+
-							" in the table");
-					System.out.println("Updated "
-							+personTable.getItems().get(selectedIndex).getFirstName()+
-							" in the table");
-					personTable.getItems().remove(selectedIndex);
-				}
-	
-			}
-		}
-		else{
-			updateButton.setDisable(false);
-		}
-
-	}
-
-	/**
 	 * This method is used to validate all the business logic
 	 */
 	@FXML
 	public void verifyTextFields() {
-		
+
 		ChangeListener<String> textListener = new ChangeListener<String>() {
-			
+
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
 				StringProperty obsVal = (StringProperty) observable;
 				TextField observedTextField = (TextField) obsVal.getBean();
-				if(observedTextField==firstNameText) {
+				if(observedTextField==firstNameText && newValue!=null) {
 					if((newValue!=null)&&newValue.length()>20) {
-//						statusLabel.setWrapText(true);
-//						statusLabel.setText("First name should not be more than 20 characters.");
-//						addButton.setDisable(true);
 						fnStatusLabel.setText(errorStrings.get("nameError"));
 						errorList[0]=1;
 					}
 					else {
 						fnStatusLabel.setText("");
 						errorList[0]=0;
-//						addButton.setDisable(false);
 					}
-					
+
 				}
-				else if (observedTextField==lastNameText) {
+				else if (observedTextField==lastNameText && newValue!=null) {
 					if((newValue!=null)&&newValue.length()>20) {
-//						statusLabel.setWrapText(true);
-//						statusLabel.setText("Last name should not be more than 20 characters.");
-//						addButton.setDisable(true);
 						errorList[1]=1;
 						lnStatusLabel.setText(errorStrings.get("nameError"));
 					}
 					else {
 						lnStatusLabel.setText("");
 						errorList[1]=0;
-//						addButton.setDisable(false);
 					}
-					
+
 				}
-				else if (observedTextField==middleInitialText) {
+				else if (observedTextField==middleInitialText && newValue!=null) {
 					if((newValue!=null)&&newValue.length()>1) {
-//						statusLabel.setWrapText(true);
-//						statusLabel.setText("Middle initial should only be a single character");
-//						addButton.setDisable(true);
 						errorList[2]=1;
 						mStatusLabel.setText(errorStrings.get("initialError"));
 					}
 					else {
 						mStatusLabel.setText("");
 						errorList[2]=0;
-//						addButton.setDisable(false);
 					}
-					
+
 				}
-				else if (observedTextField==addressLineOneText) {
+				else if (observedTextField==addressLineOneText && newValue!=null) {
 					if((newValue!=null)&&newValue.length()>35) {
-//						statusLabel.setWrapText(true);
-//						statusLabel.setText("Address fields should not exceed 35 characters each");
-//						addButton.setDisable(true);
 						errorList[3]=1;
 						adoStatusLabel.setText(errorStrings.get("addressError"));
 					}
 					else {
 						adoStatusLabel.setText("");
 						errorList[3]=0;
-//						addButton.setDisable(false);
 					}
-					
+
 				}
-				else if (observedTextField==addressLineTwoText) {
+				else if (observedTextField==addressLineTwoText && newValue!=null) {
 					if((newValue!=null)&&newValue.length()>35) {
-//						statusLabel.setWrapText(true);
-//						statusLabel.setText("Address fields should not exceed 35 characters each");
-//						addButton.setDisable(true);
 						errorList[4]=1;
 						adtStatusLabel.setText(errorStrings.get("addressError"));
 					}
 					else {
 						adtStatusLabel.setText("");
 						errorList[4]=0;
-//						addButton.setDisable(false);
 					}
 				}
-				else if (observedTextField==cityText) {
+				else if (observedTextField==cityText && newValue!=null) {
 					if((newValue!=null)&&newValue.length()>25) {
-//						statusLabel.setWrapText(true);
-//						statusLabel.setText("City name should not exceed 25 characters");
-//						addButton.setDisable(true);
 						errorList[5]=1;
 						ctStatusLabel.setText(errorStrings.get("cityError"));
 					}
 					else {
 						ctStatusLabel.setText("");
 						errorList[5]=0;
-//						addButton.setDisable(false);
 					}
 				}
-				else if (observedTextField==stateText) {
+				else if (observedTextField==stateText && newValue!=null) {
 					if((newValue!=null)&&newValue.length()>2) {
-//						statusLabel.setWrapText(true);
-//						statusLabel.setText("Please enter the two-lettered-code for your state");
-//						addButton.setDisable(true);
 						errorList[6]=1;
 						stStatusLabel.setText(errorStrings.get("stateError"));
 					}
 					else {
 						stStatusLabel.setText("");
 						errorList[6]=0;
-//						addButton.setDisable(false);
 					}
 				}
-				else if (observedTextField==zipCodeText) {
-//					if((newValue!=null)&&newValue.length()==0 || newValue==null) statusLabel.setText("");
-					if((newValue!=null)&&!(newValue.matches("[0-9]+"))){
-//						statusLabel.setWrapText(true);
+				else if (observedTextField==zipCodeText && newValue!=null) {
+					if((newValue.length()!=0)&&!(newValue.matches("[0-9]+"))){
 						zpStatusLabel.setText(errorStrings.get("zipError"));
-//						addButton.setDisable(true);
 						errorList[7]=1;
 					}
-					else{
-//						addButton.setDisable(false);
+					else {
 						zpStatusLabel.setText("");
 						if((newValue!=null)&&newValue.length()>9) {
 							zpStatusLabel.setText(errorStrings.get("zipLength"));
-//							addButton.setDisable(true);
 							errorList[7]=1;
 						}
 						else {
 							zpStatusLabel.setText("");
 							errorList[7]=0;
-//							addButton.setDisable(false);
 						}
 					}
 				}
-				else if (observedTextField==phoneText) {
-					if((newValue!=null)&&!(newValue.matches("[0-9]+"))){
-//						statusLabel.setWrapText(true);
-//						statusLabel.setText("Please enter numbers only");
-//						addButton.setDisable(true);
+				else if (observedTextField==phoneText && newValue!=null) {
+					if((newValue.length()!=0)&&!(newValue.matches("[0-9]+"))){
 						errorList[8]=1;
 						phStatusLabel.setText(errorStrings.get("phoneError"));
 					}
 					else{
-//						addButton.setDisable(false);
-//						statusLabel.setText("");
 						phStatusLabel.setText("");
 						if((newValue!=null)&&newValue.length()>21) {
 							phStatusLabel.setText(errorStrings.get("phoneLength"));
-//							addButton.setDisable(true);
 							errorList[8]=1;
 						}
 						else {
 							phStatusLabel.setText("");
-//							statusLabel.setText("");
 							errorList[8]=0;
-//							addButton.setDisable(false);
 						}
 					}
 				}
-				else if (observedTextField==genderText) {
-					if((newValue!=null)&&!(newValue.equalsIgnoreCase("m") || newValue.equalsIgnoreCase("f"))) {
-//						statusLabel.setText("Enter either M/F");
-//						addButton.setDisable(true);
+				else if (observedTextField==genderText && newValue!=null) {
+					if((newValue.length()!=0)&&!(newValue.equalsIgnoreCase("m") || newValue.equalsIgnoreCase("f"))) {
 						errorList[9]=1;
 						gnStatusLabel.setText(errorStrings.get("genderError"));
 					}
 					else {
 						gnStatusLabel.setText("");
 						errorList[9]=0;
-//						addButton.setDisable(false);
 					}
 				}
 

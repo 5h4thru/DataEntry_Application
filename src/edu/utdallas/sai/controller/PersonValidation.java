@@ -22,44 +22,49 @@ public class PersonValidation {
 
 		ObservableList<Person> personData = mainApp.getPersonData();
 		for (Person personInTheList : personData) {
-			if((personToBeVerified.getFirstName().equalsIgnoreCase(personInTheList.getFirstName()))
-					&&(personToBeVerified.getMiddleInitial().equalsIgnoreCase(personInTheList.getMiddleInitial()))
-					&&(personToBeVerified.getLastName().equalsIgnoreCase(personInTheList.getLastName())))
+			if((checkString(personToBeVerified.getFirstName(), personInTheList.getFirstName()))
+					&& checkString(personToBeVerified.getLastName(),personInTheList.getLastName())
+					&& checkString(personToBeVerified.getMiddleInitial(),personInTheList.getMiddleInitial())) {
 				flag = true;
+			}
 		}
 		return flag;
 	}
-	
+
 	public boolean isUpToDate(Person personToBeVerified) {
-		
 		ObservableList<Person> personData = mainApp.getPersonData();
 		for (Person personInTheList : personData) {
-			
-			if(
-					(personToBeVerified.getAddressLineOne()==null)&& (personInTheList.getAddressLineOne()==null)
-					|| (personToBeVerified.getAddressLineTwo()==null) && (personInTheList.getAddressLineTwo()==null)
-					|| (personToBeVerified.getCity()==null) && (personInTheList.getCity()==null)
-					|| (personToBeVerified.getState()==null) && (personInTheList.getState()==null)
-					|| (personToBeVerified.getGender()==null) && (personInTheList.getGender()==null)
-					)
-			{
-				flag = true;
-				break;
-			}
-
-			if((personToBeVerified.getFirstName().equalsIgnoreCase(personInTheList.getFirstName()))
-					&&(personToBeVerified.getMiddleInitial().equalsIgnoreCase(personInTheList.getMiddleInitial()))
-					&&(personToBeVerified.getLastName().equalsIgnoreCase(personInTheList.getLastName()))
-					&&(personToBeVerified.getAddressLineOne().equalsIgnoreCase(personInTheList.getAddressLineOne()))
-					&&(personToBeVerified.getAddressLineTwo().equalsIgnoreCase(personInTheList.getAddressLineTwo()))
-					&&(personToBeVerified.getCity().equalsIgnoreCase(personInTheList.getCity()))
-					&&(personToBeVerified.getState().equalsIgnoreCase(personInTheList.getState()))
-					&&(personToBeVerified.getZipCode().equalsIgnoreCase(personInTheList.getZipCode()))
-					&&(personToBeVerified.getPhoneNumber().equalsIgnoreCase(personInTheList.getPhoneNumber()))
-					&&(personToBeVerified.getGender().equalsIgnoreCase(personInTheList.getGender())))
+			if((checkString(personToBeVerified.getFirstName(), personInTheList.getFirstName()))
+					&& checkString(personToBeVerified.getLastName(),personInTheList.getLastName())
+					&& checkString(personToBeVerified.getMiddleInitial(),personInTheList.getMiddleInitial())
+					&& checkString(personToBeVerified.getAddressLineOne(),personInTheList.getAddressLineOne())
+					&& checkString(personToBeVerified.getAddressLineTwo(),personInTheList.getAddressLineTwo())
+					&& checkString(personToBeVerified.getCity(),personInTheList.getCity())
+					&& checkString(personToBeVerified.getState(),personInTheList.getState())
+					&& checkString(personToBeVerified.getZipCode(),personInTheList.getZipCode())
+					&& checkString(personToBeVerified.getPhoneNumber(),personInTheList.getPhoneNumber())
+					&& checkString(personToBeVerified.getGender(),personInTheList.getGender()))
 				flag = true;
 		}
 		return flag;
 	}
 
+	/**
+	 * Custom function to check two strings
+	 * @param prStringToBeVerified
+	 * @param prStringInTheList
+	 * @return
+	 */
+	public boolean checkString(String prStringToBeVerified, String prStringInTheList) {
+		if(
+				(prStringToBeVerified==null || prStringToBeVerified.length()==0)
+				&& (prStringInTheList==null || prStringInTheList.length()==0)
+				)
+			return true;
+		else if (prStringToBeVerified.equalsIgnoreCase(prStringInTheList))
+			return true;
+		else
+			return false;
+
+	}
 }

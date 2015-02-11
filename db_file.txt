@@ -1,5 +1,5 @@
-Hrithik:Roshan:P:2700 Waterview Pkwy:Apt #4555:Dallas:TX:75080:4695312650:M
-Durga Sai:Palagummi:P:2700 Waterview Pkwy:Apt #4533:Dallas:TX:75080:4698036380:M
-Rakesh:Roshan:P:2700 Waterview Pkwy:Apt #4521:Dallas:TX:75080:9799299581:M
-Bipasha:Basu:P:7740 McCallum Blvd:Apt #357:Dallas:TX:75252:9799599874:F
-Samantha:Prabhu:R:7740 McCallum Blvd:Apt #357:Dallas:TX:75252:9117445262:F
+Hrithik	Roshan	P	2700 Waterview Parkway	Apt #4545	Dallas	TX	75080	4695312650	M
+Durga Sai Preetham	Palagummi		2700 Waterview Parkway	Atp #4533	Dallas	TX	75080	4698036380	M
+Rakesh	Roshan		2700 Waterview Parkway		Dallas	TX	75080	9799299854	M
+Bipasha	Basu	P	7740 McCallum Blvd	Apt: 357	Dallas	TX	75080	9799253234	F
+Samantha	Prabhu	P	7740 McCallum Blvd	Apt #357	Dallas	TX	75080	4698522526	F
