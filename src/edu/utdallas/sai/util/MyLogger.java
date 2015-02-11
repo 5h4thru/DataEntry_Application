@@ -30,7 +30,7 @@ public class MyLogger {
 		} catch (IOException e) {
 			logger.info("Error in logger class "+e.getMessage());
 		} finally {
-			handler.close();
+			if(handler!=null) handler.close();
 		}
 	}
 }
