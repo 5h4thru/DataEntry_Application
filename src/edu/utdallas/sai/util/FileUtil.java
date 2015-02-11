@@ -68,8 +68,7 @@ public class FileUtil {
 					personData.add(personObject);
 				line = reader.readLine();
 			}
-			if(reader!=null)
-				reader.close();
+			if(reader!=null) reader.close();
 		} catch (Exception e) {
 			MyLogger.writeToLog(this.getClass().getName(), e.getMessage());
 		}
@@ -97,7 +96,7 @@ public class FileUtil {
 			writer.write(person.getGender());
 			writer.write("\n");
 			writer.flush();
-			writer.close();
+			if(writer!=null) writer.close();
 		} catch (Exception e) {
 			MyLogger.writeToLog(this.getClass().getName(), e.getMessage());
 		}
@@ -136,8 +135,8 @@ public class FileUtil {
 					pw.flush();
 				}
 			}
-			pw.close();
-			br.close();
+			if(pw!=null) pw.close();
+			if(br!=null) br.close();
 
 			//Delete the original file
 			if (!inFile.delete()) {
@@ -212,8 +211,8 @@ public class FileUtil {
 
 				}
 			}
-			pw.close();
-			br.close();
+			if(pw!=null) pw.close();
+			if(br!=null) br.close();
 
 			//Delete the original file
 			if (!inFile.delete()) {
